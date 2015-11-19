@@ -64,7 +64,7 @@ public class ForecastParser {
                     .getNodeValue()+"\tmáxima:"+elemento.getElementsByTagName("temperature").item(0).getAttributes().
                     getNamedItem("max").getNodeValue());
         }
-    }
 
+    }
 
 }
