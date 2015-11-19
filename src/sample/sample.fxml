@@ -13,7 +13,7 @@
       <SplitPane layoutY="67.0" prefHeight="333.0" prefWidth="143.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="457.0" AnchorPane.topAnchor="67.0" />
       <SplitPane layoutX="143.0" layoutY="67.0" prefHeight="333.0" prefWidth="457.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="143.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="67.0">
          <items>
-            <ListView prefHeight="200.0" prefWidth="200.0" />
+            <ListView fx:id="ForecastResults" prefHeight="200.0" prefWidth="200.0" />
          </items>
       </SplitPane>
       <MenuBar prefHeight="21.0" prefWidth="600.0" AnchorPane.bottomAnchor="371.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
