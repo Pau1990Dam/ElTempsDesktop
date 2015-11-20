@@ -5,12 +5,18 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ListView;
 import javafx.scene.control.cell.ComboBoxListCell;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+
+import javax.swing.*;
+
 
 public class Controller {
 
     //Pruebas
     private int limitPrevisio;
     private ForecastParser prediccio=new ForecastParser();
+    private ImageView imagen=new ImageView();
 
     public static final ObservableList data =
             FXCollections.observableArrayList();
@@ -20,13 +26,10 @@ public class Controller {
 
     public void initialize(){
 
-        for (int i = 0; i < 18; i++) {
-            data.add("anonym");
-        }
         limitPrevisio=prediccio.getTotalPrevisiones();
         data.add(prediccio.toString(limitPrevisio));
         ForecastResults.setItems(data);
-
+        Image icon= new Image("/icons/broken_clouds.png");
     }
 
 

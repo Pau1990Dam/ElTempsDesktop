@@ -122,3 +122,6 @@ public class ForecastParser {
     }
 
 }
+
+
+// http://api.openweathermap.org/data/2.5/forecast/daily?id=3128760&units=metric&lang=es&APPID=059046f3861b6d1faeba2ab024a1cf31&mode=XML&cnt=14
