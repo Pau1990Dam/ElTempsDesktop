@@ -1,5 +1,6 @@
 package sample;
 
+import DomParser.ForecastParser;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ListView;
@@ -8,6 +9,8 @@ import javafx.scene.control.cell.ComboBoxListCell;
 public class Controller {
 
     //Pruebas
+    private int limitPrevisio;
+    private ForecastParser prediccio=new ForecastParser();
 
     public static final ObservableList data =
             FXCollections.observableArrayList();
@@ -20,7 +23,8 @@ public class Controller {
         for (int i = 0; i < 18; i++) {
             data.add("anonym");
         }
-
+        limitPrevisio=prediccio.getTotalPrevisiones();
+        data.add(prediccio.toString(limitPrevisio));
         ForecastResults.setItems(data);
 
     }
