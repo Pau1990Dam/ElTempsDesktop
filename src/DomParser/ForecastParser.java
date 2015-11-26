@@ -23,6 +23,9 @@ public class ForecastParser {
 
     private MiniTraductor traductor=new MiniTraductor();
     private String ciudad;
+    private int ciudadId=3128760;
+    private String url;
+    private Ciudad city=new Ciudad();
     private String pais;
     private ArrayList<String>tiempo=new ArrayList<>();
     private ArrayList<String>temperaturas=new ArrayList<>();
@@ -32,10 +35,10 @@ public class ForecastParser {
     private ArrayList<String> humedad =new ArrayList<>();
     private ArrayList<String> nubes =new ArrayList<>();
 
-    public Document CarregarDocXML() throws
+    public Document CarregarDocXML(String url) throws
             ParserConfigurationException, IOException, SAXException {
 
-        String url="http://api.openweathermap.org/data/2.5/forecast/city?id=3128760&units=metric&lang=es&APPID=059046f3861b6d1faeba2ab024a1cf31&mode=XML";
+        //String url="http://api.openweathermap.org/data/2.5/forecast/city?id=3128760&units=metric&lang=es&APPID=059046f3861b6d1faeba2ab024a1cf31&mode=XML";
         DocumentBuilderFactory Factoria
                 = DocumentBuilderFactory.newInstance();
         DocumentBuilder carregarXML = DocumentBuilderFactory.newInstance()
@@ -47,8 +50,9 @@ public class ForecastParser {
 
     }
 
-    public void parser() throws IOException, SAXException, ParserConfigurationException, ParseException {
-        Document doc =this.CarregarDocXML();
+    public void parser(String city) throws IOException, SAXException, ParserConfigurationException, ParseException {
+        url=urlConstructor(city);
+        Document doc =this.CarregarDocXML(url);
         if(doc.hasChildNodes()){
             lectorMetadatos(doc);
             lectorPrevision(doc);
@@ -96,9 +100,9 @@ public class ForecastParser {
 
     }
 
-    public String toString(int i){
+    public String getPrediccion(int i, String city){
         try {
-            parser();
+            parser(city);
             return tiempo.get(i)+"\n\t"+
                     "Cielo :"+nubes.get(i)+"\n\t"+
                     "Temperatura :"+temperaturas.get(i)+"\n\t"+
@@ -117,8 +121,25 @@ public class ForecastParser {
         return "FAIL";
     }
 
+    public String getCiudad(){
+        return ciudad;
+    }
+    public String getPais(){
+        return pais;
+    }
+
     public int getTotalPrevisiones(){
         return temperaturas.size();
+    }
+
+    private String urlConstructor(String city){
+        StringBuilder constructorUrl= new StringBuilder();
+        constructorUrl.append("http://api.openweathermap.org/data/2.5/forecast/city?id=");
+        constructorUrl.append(String.valueOf(this.city.getCiudadId(city)));
+        constructorUrl.append("&units=metric&lang=es&APPID=059046f3861b6d1faeba2ab024a1cf31&mode=XML");
+
+        return constructorUrl.toString();
+
     }
 
 }

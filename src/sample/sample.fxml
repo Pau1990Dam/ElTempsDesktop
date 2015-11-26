@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
@@ -40,5 +41,6 @@
           <Button mnemonicParsing="false" text="Button" />
         </items>
       </ToolBar>
+      <Text fx:id="ciudad" layoutY="3.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="28.7294921875" />
    </children>
 </AnchorPane>

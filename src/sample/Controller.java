@@ -7,6 +7,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.cell.ComboBoxListCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.text.Text;
 
 import javax.swing.*;
 
@@ -17,6 +18,7 @@ public class Controller {
     private int limitPrevisio;
     private ForecastParser prediccio=new ForecastParser();
     private ImageView imagen=new ImageView();
+    public Text ciudad;
 
     public static final ObservableList data =
             FXCollections.observableArrayList();
@@ -27,9 +29,10 @@ public class Controller {
     public void initialize(){
 
         limitPrevisio=prediccio.getTotalPrevisiones();
-        data.add(prediccio.toString(limitPrevisio));
+        data.add(prediccio.getPrediccion(limitPrevisio,"Barcelona"));
         ForecastResults.setItems(data);
         Image icon= new Image("/icons/broken_clouds.png");
+        ciudad.setText(prediccio.getCiudad());
     }
 
 
