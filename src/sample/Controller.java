@@ -1,8 +1,10 @@
 package sample;
 
+import DomParser.Ciudad;
 import DomParser.ForecastParser;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
 import javafx.scene.control.cell.ComboBoxListCell;
 import javafx.scene.image.Image;
@@ -18,7 +20,11 @@ public class Controller {
     private int limitPrevisio;
     private ForecastParser prediccio=new ForecastParser();
     private ImageView imagen=new ImageView();
-    public Text ciudad;
+    private Ciudad c=new Ciudad();
+    //public Text ciudad;
+    //private ObservableList<String> ciudades =
+
+    //public ComboBox
 
     public static final ObservableList data =
             FXCollections.observableArrayList();
@@ -32,7 +38,7 @@ public class Controller {
         data.add(prediccio.getPrediccion(limitPrevisio,"Barcelona"));
         ForecastResults.setItems(data);
         Image icon= new Image("/icons/broken_clouds.png");
-        ciudad.setText(prediccio.getCiudad());
+        //ciudad.setText(prediccio.getCiudad());
     }
 
 
