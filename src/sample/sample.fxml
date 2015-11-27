@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
@@ -23,7 +25,52 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <GridPane>
+                  <GridPane prefHeight="111.0" prefWidth="73.0">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <Label text="Escoje una ciudad" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                        <TextField promptText="Código ISO de pais" GridPane.rowIndex="2" />
+                        <Separator prefWidth="200.0" GridPane.rowIndex="3" />
+                        <TextField promptText="Ciudad" GridPane.rowIndex="1" />
+                     </children>
+                     <GridPane.margin>
+                        <Insets />
+                     </GridPane.margin>
+                     <opaqueInsets>
+                        <Insets left="5.0" right="5.0" />
+                     </opaqueInsets>
+                  </GridPane>
+                  <GridPane GridPane.rowIndex="1">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <Label text="Intervalo de prevision" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                        <MenuButton mnemonicParsing="false" text="MenuButton" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER">
+                          <items>
+                            <MenuItem mnemonicParsing="false" text="Action 1" />
+                            <MenuItem mnemonicParsing="false" text="Action 2" />
+                          </items>
+                        </MenuButton>
+                        <RadioButton mnemonicParsing="false" text="Dias  " GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+                        <RadioButton mnemonicParsing="false" text="Horas" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
+                     </children>
+                  </GridPane>
+                  <GridPane GridPane.rowIndex="2">
                     <columnConstraints>
                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                     </columnConstraints>
@@ -33,14 +80,37 @@
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
-                        <Label text="Escoje una ciudad" />
-                        <ComboBox fx:id="CBciudades" prefWidth="150.0" GridPane.rowIndex="1" />
+                        <Separator prefWidth="200.0" GridPane.valignment="CENTER" />
                      </children>
                   </GridPane>
                </children>
             </GridPane>
          </items></SplitPane>
-      <SplitPane layoutX="143.0" layoutY="67.0" prefHeight="333.0" prefWidth="457.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="143.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="67.0" />
+      <SplitPane layoutX="143.0" layoutY="67.0" prefHeight="333.0" prefWidth="457.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="143.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="67.0">
+         <items>
+            <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
+              <tabs>
+                <Tab text="Prevision">
+                     <content>
+                        <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                           <children>
+                              <TableView prefHeight="298.0" prefWidth="455.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                <columns>
+                                  <TableColumn prefWidth="106.0" text="Intervalo" />
+                                  <TableColumn minWidth="2.0" prefWidth="108.0" text="Temperatura" />
+                                    <TableColumn prefWidth="101.0" text="Humedad" />
+                                    <TableColumn prefWidth="75.0" text="Viento" />
+                                    <TableColumn prefWidth="75.0" text="Cielo" />
+                                </columns>
+                              </TableView>
+                           </children>
+                        </AnchorPane>
+                     </content>
+                  </Tab>
+                <Tab text="Grafica de las temperaturas" />
+              </tabs>
+            </TabPane>
+         </items></SplitPane>
       <MenuBar prefHeight="21.0" prefWidth="600.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
         <menus>
           <Menu mnemonicParsing="false" text="File">
@@ -60,10 +130,6 @@
           </Menu>
         </menus>
       </MenuBar>
-      <ToolBar layoutY="29.0" prefHeight="37.0" prefWidth="600.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
-        <items>
-          <Button mnemonicParsing="false" text="Button" />
-        </items>
-      </ToolBar>
+      <ToolBar layoutY="29.0" prefHeight="37.0" prefWidth="600.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
    </children>
 </AnchorPane>

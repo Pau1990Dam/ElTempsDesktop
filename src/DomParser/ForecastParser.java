@@ -29,11 +29,11 @@ public class ForecastParser {
     private String pais;
     private ArrayList<String>tiempo=new ArrayList<>();
     private ArrayList<String>temperaturas=new ArrayList<>();
-    private ArrayList<String> direccionViento=new ArrayList<>();
+    private ArrayList<String>direccionViento=new ArrayList<>();
     private ArrayList<String>viento=new ArrayList<>();
-    private ArrayList<String> presion=new ArrayList<>();
-    private ArrayList<String> humedad =new ArrayList<>();
-    private ArrayList<String> nubes =new ArrayList<>();
+    private ArrayList<String>presion=new ArrayList<>();
+    private ArrayList<String>humedad =new ArrayList<>();
+    private ArrayList<String>nubes =new ArrayList<>();
 
     public Document CarregarDocXML(String url) throws
             ParserConfigurationException, IOException, SAXException {
