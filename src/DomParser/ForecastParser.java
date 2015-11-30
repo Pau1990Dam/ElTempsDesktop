@@ -15,6 +15,7 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  * Created by 14270729b on 13/11/15.
@@ -35,53 +36,61 @@ public class ForecastParser {
     private ArrayList<String>humedad =new ArrayList<>();
     private ArrayList<String>nubes =new ArrayList<>();
 
-    public Document CarregarDocXML(String url) throws
-            ParserConfigurationException, IOException, SAXException {
-
-        //String url="http://api.openweathermap.org/data/2.5/forecast/city?id=3128760&units=metric&lang=es&APPID=059046f3861b6d1faeba2ab024a1cf31&mode=XML";
-        DocumentBuilderFactory Factoria
-                = DocumentBuilderFactory.newInstance();
-        DocumentBuilder carregarXML = DocumentBuilderFactory.newInstance()
-                .newDocumentBuilder();
-        Document doc = carregarXML.parse(new URL(url).openStream());
-        doc.getDocumentElement().normalize();
-
-        return doc;
-
+    public void startPrediccion(String city, String periodo){
+        try {
+            if(periodo!=null)periodo=periodo.substring(0, periodo.lastIndexOf(" "));
+            parser(city, periodo);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (SAXException e) {
+            e.printStackTrace();
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void parser(String city) throws IOException, SAXException, ParserConfigurationException, ParseException {
-        url=urlConstructor(city);
+
+    public void parser(String city, String periodo) throws IOException, SAXException, ParserConfigurationException, ParseException {
+        url=urlConstructor(city, periodo);
         Document doc =this.CarregarDocXML(url);
         if(doc.hasChildNodes()){
             lectorMetadatos(doc);
-            lectorPrevision(doc);
+            lectorPrevision(doc, periodo);
         }
     }
 
     public void lectorMetadatos(Document doc){
         NodeList nodes=doc.getElementsByTagName("location");
-
         ciudad=nodes.item(0).getFirstChild().getFirstChild().getNodeValue();
         nodes=doc.getElementsByTagName("country");
         pais=nodes.item(0).getFirstChild().getNodeValue();
     }
 
-    public void lectorPrevision(Document doc) throws ParseException {
+    public void lectorPrevision(Document doc, String periodo) throws ParseException {
         SimpleDateFormat inputFormat= new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         SimpleDateFormat outputFormat= new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        if(periodo!=null){
+            inputFormat=new SimpleDateFormat("yyyy-MM-dd");
+            outputFormat=new SimpleDateFormat("EEEE dd 'de' MMMM 'del' yyyy", new Locale("ES"));
+        }
+
         DecimalFormat formato= new DecimalFormat("#0.00");
         double velocidadViento;
         NodeList nodes = doc.getElementsByTagName("time");
 
         for(int i=0;i<nodes.getLength();i++){
             Element elemento=(Element)nodes.item(i);
-            tiempo.add("Desde "+outputFormat.format(inputFormat.parse(elemento.getAttributes().getNamedItem("from").
-                    getNodeValue()))+"\t\tHasta "+outputFormat.format(inputFormat.parse(elemento.getAttributes().
-                    getNamedItem("to").getNodeValue())));
-            temperaturas.add("media: " + elemento.getElementsByTagName("temperature").item(0).getAttributes().
-                    getNamedItem("value")
-                    .getNodeValue()+" ºC" + "\tmínima: " + elemento.getElementsByTagName("temperature").item(0).getAttributes().
+            if(periodo==null) {
+                tiempo.add(outputFormat.format(inputFormat.parse(elemento.getAttributes().getNamedItem("from").
+                        getNodeValue())) + "  - " + outputFormat.format(inputFormat.parse(elemento.getAttributes().
+                        getNamedItem("to").getNodeValue())).substring(10));
+            }else{
+                tiempo.add(outputFormat.format(inputFormat.parse(elemento.getAttributes().getNamedItem("day").
+                        getNodeValue())).toUpperCase());
+            }
+            temperaturas.add("mínima: " + elemento.getElementsByTagName("temperature").item(0).getAttributes().
                     getNamedItem("min")
                     .getNodeValue()+" ºC" + "\tmáxima:" + elemento.getElementsByTagName("temperature").item(0).getAttributes().
                     getNamedItem("max").getNodeValue()+" ºC");
@@ -100,9 +109,9 @@ public class ForecastParser {
 
     }
 
-    public String getPrediccion(int i, String city){
+    public String getPrediccion(int i, String city, String periodo){
         try {
-            parser(city);
+            parser(city, periodo);
             return tiempo.get(i)+"\n\t"+
                     "Cielo :"+nubes.get(i)+"\n\t"+
                     "Temperatura :"+temperaturas.get(i)+"\n\t"+
@@ -121,28 +130,70 @@ public class ForecastParser {
         return "FAIL";
     }
 
+    public String getTemp(int i){return temperaturas.get(i);}
+
+    public String getTime(int i){return tiempo.get(i);}
+
+    public String getWind(int i){return direccionViento.get(i)+"\t"+viento.get(i);}
+
+    public String getPresure(int i){return presion.get(i);}
+
+    public String getHumity(int i){return humedad.get(i);}
+
+    public String getClouds(int i){return nubes.get(i);}
+
     public String getCiudad(){
         return ciudad;
     }
+
     public String getPais(){
         return pais;
     }
 
-    public int getTotalPrevisiones(){
-        return temperaturas.size();
+    public int getTotalPrevisiones(){return temperaturas.size();}
+
+    public void clearPrevisiones(){
+        tiempo.clear();
+        temperaturas.clear();
+        presion.clear();
+        nubes.clear();
+        humedad.clear();
+        viento.clear();
+        direccionViento.clear();
     }
 
-    private String urlConstructor(String city){
+    private String urlConstructor(String city, String periodo){
         StringBuilder constructorUrl= new StringBuilder();
-        constructorUrl.append("http://api.openweathermap.org/data/2.5/forecast/city?id=");
+        if(periodo!=null)constructorUrl.append("http://api.openweathermap.org/data/2.5/forecast/daily?id=");
+        else constructorUrl.append("http://api.openweathermap.org/data/2.5/forecast/city?id=");
         constructorUrl.append(String.valueOf(this.city.getCiudadId(city)));
         constructorUrl.append("&units=metric&lang=es&APPID=059046f3861b6d1faeba2ab024a1cf31&mode=XML");
+        if(periodo!=null)constructorUrl.append("&cnt="+periodo);
 
         return constructorUrl.toString();
 
     }
 
+    private Document CarregarDocXML(String url) throws
+            ParserConfigurationException, IOException, SAXException {
+
+        URL Url=new URL(url);
+        //String url="http://api.openweathermap.org/data/2.5/forecast/city?id=3128760&units=metric&lang=es&APPID=059046f3861b6d1faeba2ab024a1cf31&mode=XML";
+        DocumentBuilderFactory Factoria
+                = DocumentBuilderFactory.newInstance();
+        DocumentBuilder carregarXML = Factoria
+                .newDocumentBuilder();
+        //Document doc = carregarXML.parse(new URL(url).openStream());
+        Document doc = carregarXML.parse(String.valueOf(Url));
+        doc.getDocumentElement().normalize();
+
+        return doc;
+
+    }
+
 }
 
+
+// "http://api.openweathermap.org/data/2.5/forecast/city?id=3128760&units=metric&lang=es&APPID=059046f3861b6d1faeba2ab024a1cf31&mode=XML";
 
 // http://api.openweathermap.org/data/2.5/forecast/daily?id=3128760&units=metric&lang=es&APPID=059046f3861b6d1faeba2ab024a1cf31&mode=XML&cnt=14

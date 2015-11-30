@@ -30,6 +30,8 @@ public class MiniTraductor {
                 return "Norte-nordeste";
             case "East":
                 return "Este";
+            case "North":
+                return "Norte";
             default:
                 return s;
         }
