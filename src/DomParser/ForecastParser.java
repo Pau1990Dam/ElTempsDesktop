@@ -106,9 +106,8 @@ public class ForecastParser {
                     getNamedItem("value").getNodeValue()+" %");
             nubes.add(traductor.nuvols(elemento.getElementsByTagName("clouds").item(0).getAttributes().
                     getNamedItem("value").getNodeValue()));
-            iconos.add("/icons/"+elemento.getElementsByTagName("symbol").item(0).getAttributes().
+            iconos.add("http://openweathermap.org/img/w/"+elemento.getElementsByTagName("symbol").item(0).getAttributes().
                     getNamedItem("var").getNodeValue()+".png");
-            System.out.println(iconos.get(i));
         }
     }
 

@@ -109,7 +109,7 @@
                                     <TableColumn fx:id="viento" prefWidth="-1.0" text="Viento" />
                                     <TableColumn fx:id="humedad" prefWidth="-1.0" text="Humedad" />
                                     <TableColumn fx:id="presion" prefWidth="-1.0" text="Presion" />
-                                    <TableColumn fx:id="cielo" prefWidth="-1.0" text="Column X" />
+                                    <TableColumn fx:id="cielo" prefWidth="-1.0" text="Cielo" />
                                 </columns>
                                  <columnResizePolicy>
                                     <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

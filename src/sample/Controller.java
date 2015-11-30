@@ -19,6 +19,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
+import java.io.File;
+import java.net.MalformedURLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -35,7 +37,7 @@ public class Controller {
     public TableColumn<TablaModel, String>viento;
     public TableColumn<TablaModel, String>humedad;
     public TableColumn<TablaModel, String>presion;
-    public TableColumn <TablaModel, ImageView>cielo;
+    public TableColumn <TablaModel, Image>cielo;//ImageView
     public RadioButton RbDia;
     public RadioButton RbHora;
     public MenuButton MbIntervalo;
@@ -57,7 +59,6 @@ public class Controller {
     private RadioButton lastRadio;
 
     private ForecastParser prediccio=new ForecastParser();
-    private ImageView imagen=new ImageView();
     private Ciudad c=new Ciudad();
 
     public void initialize(){
@@ -65,22 +66,15 @@ public class Controller {
         lastRadio=RbHora;
         setIntervaloOptions("RbHora");
         EtCiudad.setText("Barcelona");
-        /*
-        prediccio.startPrediccion(EtCiudad.getText(), null);
-        for(int i=0;i<prediccio.getTotalPrevisiones();i++){
-            datos.addAll(new TablaModel(prediccio.getTime(i),prediccio.getTemp(i),prediccio.getWind(i),
-                    prediccio.getHumity(i),prediccio.getPresure(i)));
-        }*/
 
         intervalo.setCellValueFactory(new PropertyValueFactory<TablaModel, String>("Intervalo"));
         temperatura.setCellValueFactory(new PropertyValueFactory<TablaModel, String>("Temperatura"));
         viento.setCellValueFactory(new PropertyValueFactory<TablaModel, String>("Viento"));
         humedad.setCellValueFactory(new PropertyValueFactory<TablaModel, String>("Humedad"));
         presion.setCellValueFactory(new PropertyValueFactory<TablaModel, String>("Presion"));
-        cielo.setCellValueFactory(new PropertyValueFactory<TablaModel, ImageView>("Cielo"));
-      //  cielo.setCellValueFactory(new PropertyValueFactory<TablaModel, ImageView>("img"));
+        cielo.setCellValueFactory(new PropertyValueFactory<TablaModel, Image>("Cielo"));
+        
         actualizar.fire();
-        //tabla.setItems(datos);
     }
 
 
@@ -123,7 +117,7 @@ public class Controller {
         MbIntervalo.getItems().addAll(tiempoPrediccion);
     }
 
-    public void update(ActionEvent actionEvent) throws ParseException {
+    public void update(ActionEvent actionEvent) throws ParseException, MalformedURLException {
        // Tooltip t= new Tooltip();
         prediccio.clearPrevisiones();
         prediccio.startPrediccion(EtCiudad.getText(), MbIntervalo.getText());
@@ -131,7 +125,7 @@ public class Controller {
 
         for(int i=0;i<prediccio.getTotalPrevisiones();i++){
             datos.addAll(new TablaModel(prediccio.getTime(i),prediccio.getTemp(i),prediccio.getWind(i),
-                    prediccio.getHumity(i),prediccio.getPresure(i)));//,prediccio.getIcons(i)
+                    prediccio.getHumity(i),prediccio.getPresure(i),prediccio.getIcons(i)));//,prediccio.getIcons(i)
         }
         tabla.setItems(datos);
         tabla.refresh();
