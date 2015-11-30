@@ -18,13 +18,13 @@ public class TablaModel {
     private SimpleStringProperty presion;
     private SimpleStringProperty cielo;
 
-    public TablaModel(String intervalo, String temperatura, String viento, String humedad, String presion, String cielo) {
+    public TablaModel(String intervalo, String temperatura, String viento, String humedad, String presion) {//, String cielo
         this.intervalo = new SimpleStringProperty(intervalo);
         this.temperatura = new SimpleStringProperty(temperatura);
         this.viento = new SimpleStringProperty(viento);
         this.humedad = new SimpleStringProperty(humedad);
         this.presion = new SimpleStringProperty(presion);
-        this.cielo=new SimpleStringProperty(cielo);
+        this.cielo=new SimpleStringProperty("/icons/01d.png");
        // Image image=new Image(Main.class.getResourceAsStream("/broken_clouds.png"));
        // img.setImage(image);
     }
@@ -73,7 +73,7 @@ public class TablaModel {
         this.presion.set(presion);
     }
 
-    public void setCielo(String cielo){this.cielo.set(cielo);}
+   // public void setCielo(String cielo){this.cielo.set(cielo);}
 
     public ImageView getCielo() {return new ImageView(cielo.get()); }
 

@@ -35,6 +35,7 @@ public class ForecastParser {
     private ArrayList<String>presion=new ArrayList<>();
     private ArrayList<String>humedad =new ArrayList<>();
     private ArrayList<String>nubes =new ArrayList<>();
+    private ArrayList<String>iconos=new ArrayList<>();
 
     public void startPrediccion(String city, String periodo){
         try {
@@ -105,6 +106,9 @@ public class ForecastParser {
                     getNamedItem("value").getNodeValue()+" %");
             nubes.add(traductor.nuvols(elemento.getElementsByTagName("clouds").item(0).getAttributes().
                     getNamedItem("value").getNodeValue()));
+            iconos.add("/icons/"+elemento.getElementsByTagName("symbol").item(0).getAttributes().
+                    getNamedItem("var").getNodeValue()+".png");
+            System.out.println(iconos.get(i));
         }
     }
 
@@ -140,6 +144,8 @@ public class ForecastParser {
     public String getHumity(int i){return humedad.get(i);}
 
     public String getClouds(int i){return nubes.get(i);}
+
+    public String getIcons(int i){return iconos.get(i);}
 
     public String getCiudad(){
         return ciudad;

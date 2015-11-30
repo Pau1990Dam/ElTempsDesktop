@@ -131,7 +131,7 @@ public class Controller {
 
         for(int i=0;i<prediccio.getTotalPrevisiones();i++){
             datos.addAll(new TablaModel(prediccio.getTime(i),prediccio.getTemp(i),prediccio.getWind(i),
-                    prediccio.getHumity(i),prediccio.getPresure(i)));
+                    prediccio.getHumity(i),prediccio.getPresure(i)));//,prediccio.getIcons(i)
         }
         tabla.setItems(datos);
         tabla.refresh();
