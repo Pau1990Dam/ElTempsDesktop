@@ -70,10 +70,10 @@ public class ForecastParser {
 
     public void lectorPrevision(Document doc, String periodo) throws ParseException {
         SimpleDateFormat inputFormat= new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-        SimpleDateFormat outputFormat= new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        SimpleDateFormat outputFormat= new SimpleDateFormat("dd/MM/yyyy  HH:mm");
         if(periodo!=null){
             inputFormat=new SimpleDateFormat("yyyy-MM-dd");
-            outputFormat=new SimpleDateFormat("EEEE dd 'de' MMMM 'del' yyyy", new Locale("ES"));
+            outputFormat=new SimpleDateFormat("EEE dd MMM yyyy", new Locale("ES"));
         }
 
         DecimalFormat formato= new DecimalFormat("#0.00");
@@ -92,8 +92,8 @@ public class ForecastParser {
             }
             temperaturas.add("mínima: " + elemento.getElementsByTagName("temperature").item(0).getAttributes().
                     getNamedItem("min")
-                    .getNodeValue()+" ºC" + "\tmáxima:" + elemento.getElementsByTagName("temperature").item(0).getAttributes().
-                    getNamedItem("max").getNodeValue()+" ºC");
+                    .getNodeValue() + " ºC" + "\tmáxima: " + elemento.getElementsByTagName("temperature").item(0).getAttributes().
+                    getNamedItem("max").getNodeValue() + " ºC");
             direccionViento.add(traductor.vent(elemento.getElementsByTagName("windDirection").item(0).getAttributes().
                     getNamedItem("name").getNodeValue()));
             velocidadViento=1.60934*Double.parseDouble(elemento.getElementsByTagName("windSpeed").item(0).getAttributes().
@@ -106,7 +106,6 @@ public class ForecastParser {
             nubes.add(traductor.nuvols(elemento.getElementsByTagName("clouds").item(0).getAttributes().
                     getNamedItem("value").getNodeValue()));
         }
-
     }
 
     public String getPrediccion(int i, String city, String periodo){
@@ -160,6 +159,10 @@ public class ForecastParser {
         humedad.clear();
         viento.clear();
         direccionViento.clear();
+    }
+
+    public ArrayList<String> getIntervalos(){
+        return tiempo;
     }
 
     private String urlConstructor(String city, String periodo){

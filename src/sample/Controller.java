@@ -3,14 +3,27 @@ package sample;
 import DomParser.Ciudad;
 import DomParser.ForecastParser;
 import Tabla.TablaModel;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.Scene;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.stage.Stage;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Locale;
+import java.util.logging.SimpleFormatter;
 
 public class Controller {
 
@@ -29,6 +42,8 @@ public class Controller {
     public Button actualizar;
     public TextField EtCiudad;
     public TextField EtPais;
+    public LineChart Grafica;
+    public Tab tbGrafica;
 
 
     //Union tabla datos
@@ -50,20 +65,22 @@ public class Controller {
         lastRadio=RbHora;
         setIntervaloOptions("RbHora");
         EtCiudad.setText("Barcelona");
+        /*
         prediccio.startPrediccion(EtCiudad.getText(), null);
         for(int i=0;i<prediccio.getTotalPrevisiones();i++){
             datos.addAll(new TablaModel(prediccio.getTime(i),prediccio.getTemp(i),prediccio.getWind(i),
                     prediccio.getHumity(i),prediccio.getPresure(i)));
-        }
+        }*/
 
         intervalo.setCellValueFactory(new PropertyValueFactory<TablaModel, String>("Intervalo"));
         temperatura.setCellValueFactory(new PropertyValueFactory<TablaModel, String>("Temperatura"));
         viento.setCellValueFactory(new PropertyValueFactory<TablaModel, String>("Viento"));
         humedad.setCellValueFactory(new PropertyValueFactory<TablaModel, String>("Humedad"));
         presion.setCellValueFactory(new PropertyValueFactory<TablaModel, String>("Presion"));
+        cielo.setCellValueFactory(new PropertyValueFactory<TablaModel, ImageView>("Cielo"));
       //  cielo.setCellValueFactory(new PropertyValueFactory<TablaModel, ImageView>("img"));
-
-        tabla.setItems(datos);
+        actualizar.fire();
+        //tabla.setItems(datos);
     }
 
 
@@ -106,8 +123,8 @@ public class Controller {
         MbIntervalo.getItems().addAll(tiempoPrediccion);
     }
 
-    public void update(ActionEvent actionEvent) {
-        Tooltip t= new Tooltip();
+    public void update(ActionEvent actionEvent) throws ParseException {
+       // Tooltip t= new Tooltip();
         prediccio.clearPrevisiones();
         prediccio.startPrediccion(EtCiudad.getText(), MbIntervalo.getText());
         datos.removeAll(datos);
@@ -118,7 +135,64 @@ public class Controller {
         }
         tabla.setItems(datos);
         tabla.refresh();
+        if(MbIntervalo.getText()==null)createGrafica("Mes-dia-hora");
+        else createGrafica("Dia");
     }
+
+    private void createGrafica(String intervalo) throws ParseException {
+
+        Grafica.getData().clear();
+        ArrayList<String>ejeX=new ArrayList<>();
+
+        for(String momento: prediccio.getIntervalos()){
+            ejeX.add(dataStringFormater(momento));
+        }
+        CategoryAxis abscisas = new CategoryAxis();
+        NumberAxis ordenadas = new NumberAxis();
+        ordenadas.setLabel("Temperatura en ºC");
+
+        Grafica=new LineChart<String,Number>(abscisas,ordenadas);
+
+        XYChart.Series minimas = new XYChart.Series();
+        minimas.setName("minimas");
+        for(int i=0;i<prediccio.getTotalPrevisiones();i++){
+            minimas.getData().add(new XYChart.Data(ejeX.get(i), Float.parseFloat(prediccio.getTemp(i).
+                    substring(8, prediccio.getTemp(i).indexOf("º")))));
+
+        }
+
+        XYChart.Series maximas = new XYChart.Series();
+        maximas.setName("maximas");
+        for(int i=0;i<prediccio.getTotalPrevisiones();i++){
+            maximas.getData().add(new XYChart.Data(ejeX.get(i), Float.parseFloat(prediccio.getTemp(i).
+                    substring(prediccio.getTemp(i).lastIndexOf(":")+1, prediccio.getTemp(i).lastIndexOf("º")))));
+
+        }
+
+        Grafica.getData().addAll(minimas, maximas);
+        tbGrafica.setContent(Grafica);
+
+    }
+
+    private String dataStringFormater( String fecha) throws ParseException {
+        SimpleDateFormat input;
+        SimpleDateFormat ouput;
+
+        if(MbIntervalo.getText()==null){
+            input= new SimpleDateFormat("dd/MM/yyyy HH:mm");
+            ouput= new SimpleDateFormat("dd/MM HH:mm");
+
+            return ouput.format(input.parse(fecha));
+        }else{
+            Locale local= new Locale("ES");
+            input= new SimpleDateFormat("EEE dd MMM yyyy", local);
+            ouput= new SimpleDateFormat("dd MMM", local);
+
+            return ouput.format(input.parse(fecha));
+        }
+    }
+
+    public void salir(ActionEvent actionEvent) {Platform.exit();}
 
     //new Locale("es_ES")
 }
