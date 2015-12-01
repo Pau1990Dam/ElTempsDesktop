@@ -34,6 +34,7 @@ import java.util.logging.SimpleFormatter;
 
 public class Controller {
 
+    private DetallsController detalls;
     //Tabla
     public TableView<TablaModel>tabla;
 
@@ -92,6 +93,7 @@ table.setRowFactory( tv -> {
             if (!row.isEmpty()) {
                 TablaModel rowData = row.getItem();
                 //funcio
+                mostraDetalls(row.getIndex(), prediccio );
             }
         });
         return row;
@@ -196,7 +198,7 @@ table.setRowFactory( tv -> {
         maximas.setName("maximas");
         for(int i=0;i<prediccio.getTotalPrevisiones();i++){
             maximas.getData().add(new XYChart.Data(ejeX.get(i), Float.parseFloat(prediccio.getTemp(i).
-                    substring(prediccio.getTemp(i).lastIndexOf(":")+1, prediccio.getTemp(i).lastIndexOf("º")))));
+                    substring(prediccio.getTemp(i).lastIndexOf(":") + 1, prediccio.getTemp(i).lastIndexOf("º")))));
 
         }
 
@@ -224,6 +226,14 @@ table.setRowFactory( tv -> {
     }
 
     public void salir(ActionEvent actionEvent) {Platform.exit();}
+
+    public void setDetallsControler(DetallsController detalls) {
+        this.detalls = detalls;
+    }
+
+    public void mostraDetalls(int index, ForecastParser prediccio) {
+        detalls.showDetalls(index, prediccio);
+    }
 
     //new Locale("es_ES")
 }
