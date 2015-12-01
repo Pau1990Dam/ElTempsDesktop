@@ -28,17 +28,11 @@ public class TablaModel {
         this.humedad = new SimpleStringProperty(humedad);
         this.presion = new SimpleStringProperty(presion);
         this.cielo=new SimpleStringProperty(cielo);
-       // Image image=new Image(Main.class.getResourceAsStream("/broken_clouds.png"));
-       // img.setImage(image);
     }
 
     public String getIntervalo() {
         return intervalo.get();
     }
-
- /*   public ImageView getImg() {
-        return img;
-    }*/
 
     public void setIntervalo(String intervalo) {
         this.intervalo.set(intervalo);
@@ -75,7 +69,5 @@ public class TablaModel {
     public void setPresion(String presion) {this.presion.set(presion);}
 
     public ImageView getCielo(){return new ImageView(cielo.get());}
-
-   // public void setCielo(String cielo){this.cielo.set(cielo);}
 
 }

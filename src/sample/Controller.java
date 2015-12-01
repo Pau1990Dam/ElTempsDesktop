@@ -14,11 +14,16 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
+import java.awt.*;
+import java.awt.Dialog;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.text.ParseException;
@@ -53,7 +58,26 @@ public class Controller {
     //Para llenar el MenuButton con el intervalo de fechas
     private ObservableList<MenuItem>tiempoPrediccion=FXCollections.observableArrayList();
 
+/*
 
+
+TableView<MyType> table = new TableView<>();
+
+//...
+
+table.setRowFactory( tv -> {
+    TableRow<MyType> row = new TableRow<>();
+    row.setOnMouseClicked(event -> {
+        if (event.getClickCount() == 2 && (! row.isEmpty()) ) {
+            MyType rowData = row.getItem();
+            System.out.println(rowData);
+        }
+    });
+    return row ;
+});
+
+
+ */
 
     //
     private RadioButton lastRadio;
@@ -62,18 +86,31 @@ public class Controller {
     private Ciudad c=new Ciudad();
 
     public void initialize(){
+        tabla.setRowFactory( tv -> {
+        TableRow<TablaModel> row = new TableRow<>();
+        row.setOnMouseClicked(event -> {
+            if (!row.isEmpty()) {
+                TablaModel rowData = row.getItem();
+                //funcio
+            }
+        });
+        return row;
+    }
+
+    );
         RbHora.setSelected(true);
-        lastRadio=RbHora;
+    lastRadio=RbHora;
         setIntervaloOptions("RbHora");
         EtCiudad.setText("Barcelona");
 
         intervalo.setCellValueFactory(new PropertyValueFactory<TablaModel, String>("Intervalo"));
+
         temperatura.setCellValueFactory(new PropertyValueFactory<TablaModel, String>("Temperatura"));
         viento.setCellValueFactory(new PropertyValueFactory<TablaModel, String>("Viento"));
         humedad.setCellValueFactory(new PropertyValueFactory<TablaModel, String>("Humedad"));
         presion.setCellValueFactory(new PropertyValueFactory<TablaModel, String>("Presion"));
         cielo.setCellValueFactory(new PropertyValueFactory<TablaModel, Image>("Cielo"));
-        
+
         actualizar.fire();
     }
 
@@ -100,7 +137,7 @@ public class Controller {
         MbIntervalo.setDisable(false);
         if(opcion.equals("RbDia")){
             String dia=" Dia";
-            for(int i=1;i<=14;i++) {
+            for(int i=1;i<=17;i++) {
                 MenuItem item = new MenuItem(i + dia);
                 dia=" Dias";
                 tiempoPrediccion.add(item);
