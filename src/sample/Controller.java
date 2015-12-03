@@ -34,6 +34,7 @@ import java.util.logging.SimpleFormatter;
 
 public class Controller {
 
+    public RadioButton RbSemana;
     private DetallsController detalls;
     //Tabla
     public TableView<TablaModel>tabla;
@@ -101,7 +102,7 @@ table.setRowFactory( tv -> {
 
     );
         RbHora.setSelected(true);
-    lastRadio=RbHora;
+        lastRadio=RbHora;
         setIntervaloOptions("RbHora");
         EtCiudad.setText("Barcelona");
 
@@ -119,11 +120,6 @@ table.setRowFactory( tv -> {
 
     public void setIntervalo(ActionEvent actionEvent) {
         RadioButton item=(RadioButton) actionEvent.getSource();
-        /*
-        Tooltip a = new Tooltip();
-        a.setText(item.getText());
-        a.show(Main.getStage());
-        */
         if(lastRadio==null||lastRadio.getText().equals(item.getText())) {
             item.setSelected(true);
             return;
@@ -135,20 +131,28 @@ table.setRowFactory( tv -> {
     }
 
     private void setIntervaloOptions(String opcion){
-        tiempoPrediccion.clear();
+        MbIntervalo.getItems().removeAll(tiempoPrediccion);
+        tiempoPrediccion.removeAll(tiempoPrediccion);
         MbIntervalo.setDisable(false);
+
         if(opcion.equals("RbDia")){
             String dia=" Dia";
+            MbIntervalo.setText("Dias");
             for(int i=1;i<=17;i++) {
                 MenuItem item = new MenuItem(i + dia);
                 dia=" Dias";
                 tiempoPrediccion.add(item);
-                item.setOnAction(event -> {
-                    MenuItem item1 = (MenuItem)event.getSource();
-                    MbIntervalo.setText(item1.getText());
-                });
+                addListener(item);
             }
-
+        }else if(opcion.equals("RbSemana")){
+            MbIntervalo.setText("Semanas");
+            tiempoPrediccion.clear();
+            MenuItem item = new MenuItem("1 Semana");
+            tiempoPrediccion.add(item);
+            addListener(item);
+            item = new MenuItem("2 Semanas");
+            tiempoPrediccion.add(item);
+            addListener(item);
         }else{
             MbIntervalo.setText(null);
             MbIntervalo.setDisable(true);
@@ -156,15 +160,21 @@ table.setRowFactory( tv -> {
         MbIntervalo.getItems().addAll(tiempoPrediccion);
     }
 
+    private void addListener(MenuItem item){
+        item.setOnAction(event -> {
+            MenuItem item1 = (MenuItem) event.getSource();
+            MbIntervalo.setText(item1.getText());
+        });
+    }
+
     public void update(ActionEvent actionEvent) throws ParseException, MalformedURLException {
-       // Tooltip t= new Tooltip();
         prediccio.clearPrevisiones();
         prediccio.startPrediccion(EtCiudad.getText(), MbIntervalo.getText());
         datos.removeAll(datos);
-
+        System.out.println("Total predicciones: " + prediccio.getTotalPrevisiones());
         for(int i=0;i<prediccio.getTotalPrevisiones();i++){
-            datos.addAll(new TablaModel(prediccio.getTime(i),prediccio.getTemp(i),prediccio.getWind(i),
-                    prediccio.getHumity(i),prediccio.getPresure(i),prediccio.getIcons(i)));//,prediccio.getIcons(i)
+            datos.addAll(new TablaModel(prediccio.getTime(i), prediccio.getTemp(i), prediccio.getWind(i),
+                    prediccio.getHumity(i), prediccio.getPresure(i), prediccio.getIcons(i)));//,prediccio.getIcons(i)
         }
         tabla.setItems(datos);
         tabla.refresh();
@@ -176,7 +186,6 @@ table.setRowFactory( tv -> {
 
         Grafica.getData().clear();
         ArrayList<String>ejeX=new ArrayList<>();
-
         for(String momento: prediccio.getIntervalos()){
             ejeX.add(dataStringFormater(momento));
         }
@@ -188,18 +197,22 @@ table.setRowFactory( tv -> {
 
         XYChart.Series minimas = new XYChart.Series();
         minimas.setName("minimas");
-        for(int i=0;i<prediccio.getTotalPrevisiones();i++){
-            minimas.getData().add(new XYChart.Data(ejeX.get(i), Float.parseFloat(prediccio.getTemp(i).
-                    substring(8, prediccio.getTemp(i).indexOf("º")))));
-
-        }
-
         XYChart.Series maximas = new XYChart.Series();
         maximas.setName("maximas");
-        for(int i=0;i<prediccio.getTotalPrevisiones();i++){
-            maximas.getData().add(new XYChart.Data(ejeX.get(i), Float.parseFloat(prediccio.getTemp(i).
-                    substring(prediccio.getTemp(i).lastIndexOf(":") + 1, prediccio.getTemp(i).lastIndexOf("º")))));
-
+        if (MbIntervalo.getText()==null||MbIntervalo.getText().length() < 8) {
+            for(int i=0;i<prediccio.getTotalPrevisiones();i++){
+                minimas.getData().add(new XYChart.Data(ejeX.get(i), Float.parseFloat(prediccio.getTemp(i).
+                        substring(8, prediccio.getTemp(i).indexOf("º")))));
+                maximas.getData().add(new XYChart.Data(ejeX.get(i), Float.parseFloat(prediccio.getTemp(i).
+                        substring(prediccio.getTemp(i).lastIndexOf(":") + 1, prediccio.getTemp(i).lastIndexOf("º")))));
+            }
+        }else{
+            for(int i=0;i<prediccio.getTotalPrevisiones();i++){
+                minimas.getData().add(new XYChart.Data(ejeX.get(i), Float.parseFloat(prediccio.getTemp(i).
+                        substring(15, prediccio.getTemp(i).indexOf("º")))));
+                maximas.getData().add(new XYChart.Data(ejeX.get(i), Float.parseFloat(prediccio.getTemp(i).
+                        substring(prediccio.getTemp(i).lastIndexOf(":") + 1, prediccio.getTemp(i).lastIndexOf("º")))));
+            }
         }
 
         Grafica.getData().addAll(minimas, maximas);
@@ -216,12 +229,14 @@ table.setRowFactory( tv -> {
             ouput= new SimpleDateFormat("dd/MM HH:mm");
 
             return ouput.format(input.parse(fecha));
-        }else{
+        }else if(MbIntervalo.getText().length()<8){
             Locale local= new Locale("ES");
             input= new SimpleDateFormat("EEE dd MMM yyyy", local);
             ouput= new SimpleDateFormat("dd MMM", local);
 
             return ouput.format(input.parse(fecha));
+        }else{
+            return fecha.substring(1,9)+"\n"+fecha.substring(17,24)+" - "+fecha.substring(34,37);
         }
     }
 

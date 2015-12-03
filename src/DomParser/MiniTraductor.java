@@ -32,7 +32,12 @@ public class MiniTraductor {
                 return "Este";
             case "North":
                 return "Norte";
+            case "SouthEast":
+                return "Sud-este";
+            case "North-nothwest":
+                return "Norte-nordoeste";
             default:
+                if(s=="")return "Sin datos";
                 return s;
         }
     }
