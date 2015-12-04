@@ -30,12 +30,11 @@ public class DetallsController {
         IvIcon.setImage(new Image(prediccio.getIcons(index)));
         TxHumity.setText("Humedad: " + prediccio.getHumity(index));
 
-        TxTemp.setText("Temp: "+prediccio.getTemp(index).replace("mínima:", "").replace(prediccio.getTemp(index).
-                substring(prediccio.getTemp(index).indexOf("C") + 1, prediccio.getTemp(index).lastIndexOf(":")+1)," - "));
+        TxTemp.setText("min "+prediccio.getTempMin(index)+"ºC - "+" max "+prediccio.getTempMax(index)+"ºC");
         TxMoment.setText(prediccio.getTime(index).replace(prediccio.getTime(index).substring(0,10),
                 prediccio.getTime(index).substring(0,5)).replace(":00","h"));
         TxSky.setText("Cielo: "+prediccio.getClouds(index));
-        TxWind.setText("Viento: "+prediccio.getWind(index).replace("velocidad:",""));
+        TxWind.setText("Viento: "+prediccio.getWindDirection(index)+" "+prediccio.getWindVelocity(index)+" Km/h");
         TxPressure.setText("Presión: "+prediccio.getPresure(index));
         detallStage.show();
     }

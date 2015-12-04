@@ -24,12 +24,13 @@ public class ForecastParser {
     private int weeks=0;
     private MiniTraductor traductor=new MiniTraductor();
     private String ciudad;
-    private int ciudadId=3128760;
+   // private int ciudadId=3128760;
     private String url;
     private Ciudad city=new Ciudad();
     private String pais;
     private ArrayList<String>tiempo=new ArrayList<>();
-    private ArrayList<String>temperaturas=new ArrayList<>();
+    private ArrayList<String>tempMin=new ArrayList<>();
+    private ArrayList<String>tempMax=new ArrayList<>();
     private ArrayList<String>direccionViento=new ArrayList<>();
     private ArrayList<String>viento=new ArrayList<>();
     private ArrayList<String>presion=new ArrayList<>();
@@ -43,7 +44,6 @@ public class ForecastParser {
                 periodo=periodo.substring(0, periodo.lastIndexOf(" "));
             }else if(periodo!=null&&periodo.length()>=8){
                 weeks=Integer.parseInt(periodo.substring(0, periodo.lastIndexOf(" ")));
-                System.out.println(weeks);
                 periodo=String.valueOf(weeks*7);
             }
             parser(city, periodo);
@@ -97,19 +97,21 @@ public class ForecastParser {
                 tiempo.add(outputFormat.format(inputFormat.parse(elemento.getAttributes().getNamedItem("day").
                         getNodeValue())).toUpperCase());
             }
-            temperaturas.add("mínima: " + elemento.getElementsByTagName("temperature").item(0).getAttributes().
+            tempMin.add(elemento.getElementsByTagName("temperature").item(0).getAttributes().
                     getNamedItem("min")
-                    .getNodeValue() + " ºC" + "\tmáxima: " + elemento.getElementsByTagName("temperature").item(0).getAttributes().
-                    getNamedItem("max").getNodeValue() + " ºC");
+                    .getNodeValue());
+            tempMax.add(elemento.getElementsByTagName("temperature").item(0).getAttributes().
+                    getNamedItem("max")
+                    .getNodeValue());
             direccionViento.add(traductor.vent(elemento.getElementsByTagName("windDirection").item(0).getAttributes().
                     getNamedItem("name").getNodeValue()));
             velocidadViento=1.60934*Double.parseDouble(elemento.getElementsByTagName("windSpeed").item(0).getAttributes().
                     getNamedItem("mps").getNodeValue())*3.6;
-            viento.add("velocidad: "+formato.format(velocidadViento)+" Km/h");
+            viento.add(formato.format(velocidadViento));
             presion.add(elemento.getElementsByTagName("pressure").item(0).getAttributes().
-                    getNamedItem("value").getNodeValue()+" hPa");
+                    getNamedItem("value").getNodeValue());
             humedad.add(elemento.getElementsByTagName("humidity").item(0).getAttributes().
-                    getNamedItem("value").getNodeValue()+" %");
+                    getNamedItem("value").getNodeValue());
             nubes.add(traductor.nuvols(elemento.getElementsByTagName("clouds").item(0).getAttributes().
                     getNamedItem("value").getNodeValue()));
             iconos.add("http://openweathermap.org/img/w/"+elemento.getElementsByTagName("symbol").item(0).getAttributes().
@@ -122,32 +124,16 @@ public class ForecastParser {
         }
     }
 
-    public String getPrediccion(int i, String city, String periodo){
-        try {
-            parser(city, periodo);
-            return tiempo.get(i)+"\n\t"+
-                    "Cielo :"+nubes.get(i)+"\n\t"+
-                    "Temperatura :"+temperaturas.get(i)+"\n\t"+
-                    "Dirección del viento: "+direccionViento.get(i)+"\t"+viento.get(i)+"\n\t"+
-                    "Presión :"+presion.get(i)+"\n\t"+
-                    "Humedad: "+humedad.get(i);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (SAXException e) {
-            e.printStackTrace();
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return "FAIL";
-    }
 
-    public String getTemp(int i){return temperaturas.get(i);}
+    public String getTempMin(int i){return tempMin.get(i);}
+
+    public  String getTempMax(int i){return tempMax.get(i);}
 
     public String getTime(int i){return tiempo.get(i);}
 
-    public String getWind(int i){return direccionViento.get(i)+"\t "+viento.get(i);}
+    public String getWindDirection(int i){return direccionViento.get(i);}
+
+    public String getWindVelocity(int i){return viento.get(i);}
 
     public String getPresure(int i){return presion.get(i);}
 
@@ -165,11 +151,11 @@ public class ForecastParser {
         return pais;
     }
 
-    public int getTotalPrevisiones(){return temperaturas.size();}
+    public int getTotalPrevisiones(){return tempMin.size();}
 
     public void clearPrevisiones(){
         tiempo.clear();
-        temperaturas.clear();
+        tempMin.clear();
         presion.clear();
         nubes.clear();
         humedad.clear();
@@ -211,7 +197,6 @@ public class ForecastParser {
 
     private void calcularMediasSemanales(int weeks){
         DecimalFormat formato= new DecimalFormat("#0.00");
-        DecimalFormat formato2= new DecimalFormat("#0,00");
         int i=0;
         tiempo.add("\t\t\tSemana 1\n" + "\t" + tiempo.get(0) + " - " + tiempo.get(6));
         while(i<weeks){
@@ -222,28 +207,28 @@ public class ForecastParser {
             float calculadorMediaViento=0;
 
          for(int j=7*i;j<7*(i+1);j++){
-             calculadorMediaMin+=Float.parseFloat(temperaturas.get(j).substring(8,temperaturas.get(j).indexOf("º")));
-             calculadorMediaMax+=Float.parseFloat(temperaturas.get(j).substring(temperaturas.get(j).lastIndexOf(":") + 1
-                     , temperaturas.get(j).lastIndexOf("º")));
-             calculadorMediaPresion+=Float.parseFloat(presion.get(j).substring(0,presion.get(j).indexOf(" ")));
-             calculadorMediaHumedad+=Float.parseFloat(humedad.get(j).substring(0, humedad.get(j).indexOf(" ")));
-             calculadorMediaViento+=Float.parseFloat((viento.get(j).substring(11,viento.get(j).lastIndexOf(" "))).
-                     replace(",", "."));
+             calculadorMediaMin+=Float.parseFloat(tempMin.get(j));
+             calculadorMediaMax+=Float.parseFloat(tempMax.get(j));
+             calculadorMediaPresion+=Float.parseFloat(presion.get(j));
+             calculadorMediaHumedad+=Float.parseFloat(humedad.get(j));
+             calculadorMediaViento+=Float.parseFloat((viento.get(j)).replace(",","."));
          }
-            temperaturas.add("Media Mínimas: "+(formato.format(calculadorMediaMin / 7)).replace(",",".") + " ºC \t Media máximas: "+
-                    (formato.format(calculadorMediaMax / 7)).replace(",",".") + " ºC");
-            presion.add("Media: " + (formato.format(calculadorMediaPresion/7)).replace(",",".")+" hPa");
-            humedad.add("Media: "+formato.format(calculadorMediaHumedad/7)+" %");
-            viento.add("Media: " + formato.format(calculadorMediaViento/7)+" Km/h");
+            tempMin.add((formato.format(calculadorMediaMin / 7)));
+            tempMax.add((formato.format(calculadorMediaMax/7)));
+            presion.add((formato.format(calculadorMediaPresion/7)).replace(",","."));
+            humedad.add(formato.format(calculadorMediaHumedad/7));
+            viento.add(formato.format(calculadorMediaViento/7));
             iconos.add("https://cdn1.iconfinder.com/data/icons/weather-2-colored/512/na_moon-48.png");
+            nubes.add("");
             direccionViento.add("");
             if(i==1) { tiempo.add("\t\t\tSemana 2\n" +"\t"+ tiempo.get(7) + " - " + tiempo.get(13));}
             i++;
         }
-        int lim=temperaturas.size()-weeks;
+        int lim=tempMin.size()-weeks;
         for(int x=0;x<lim;x++){
             tiempo.remove(0);
-            temperaturas.remove(0);
+            tempMin.remove(0);
+            tempMax.remove(0);
             presion.remove(0);
             viento.remove(0);
             humedad.remove(0);
@@ -251,7 +236,6 @@ public class ForecastParser {
             nubes.remove(0);
             direccionViento.remove(0);
         }
-        System.out.println("Iconos"+iconos.size());
     }
 
 }

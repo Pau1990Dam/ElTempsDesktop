@@ -32,6 +32,10 @@ public class Ciudad {
     public int getCiudadId(String ciudad){
         return ciudades.get(ciudad);
     }
+
+
+
+    /*
     public ArrayList<String> getCiudades(){
         ArrayList<String> cities=new ArrayList<>();
         Iterator it = ciudades.keySet().iterator();
@@ -41,5 +45,5 @@ public class Ciudad {
         }
         return cities ;
     }
-
+*/
 }

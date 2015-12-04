@@ -60,28 +60,6 @@ public class Controller {
     //Para llenar el MenuButton con el intervalo de fechas
     private ObservableList<MenuItem>tiempoPrediccion=FXCollections.observableArrayList();
 
-/*
-
-
-TableView<MyType> table = new TableView<>();
-
-//...
-
-table.setRowFactory( tv -> {
-    TableRow<MyType> row = new TableRow<>();
-    row.setOnMouseClicked(event -> {
-        if (event.getClickCount() == 2 && (! row.isEmpty()) ) {
-            MyType rowData = row.getItem();
-            System.out.println(rowData);
-        }
-    });
-    return row ;
-});
-
-
- */
-
-    //
     private RadioButton lastRadio;
 
     private ForecastParser prediccio=new ForecastParser();
@@ -89,18 +67,17 @@ table.setRowFactory( tv -> {
 
     public void initialize(){
         tabla.setRowFactory( tv -> {
-        TableRow<TablaModel> row = new TableRow<>();
-        row.setOnMouseClicked(event -> {
-            if (!row.isEmpty()) {
-                TablaModel rowData = row.getItem();
-                //funcio
-                mostraDetalls(row.getIndex(), prediccio );
+            TableRow<TablaModel> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (!row.isEmpty()) {
+                    TablaModel rowData = row.getItem();
+                    mostraDetalls(row.getIndex(), prediccio );
+                }
+            });
+             return row;
             }
-        });
-        return row;
-    }
+        );
 
-    );
         RbHora.setSelected(true);
         lastRadio=RbHora;
         setIntervaloOptions("RbHora");
@@ -171,10 +148,11 @@ table.setRowFactory( tv -> {
         prediccio.clearPrevisiones();
         prediccio.startPrediccion(EtCiudad.getText(), MbIntervalo.getText());
         datos.removeAll(datos);
-        System.out.println("Total predicciones: " + prediccio.getTotalPrevisiones());
         for(int i=0;i<prediccio.getTotalPrevisiones();i++){
-            datos.addAll(new TablaModel(prediccio.getTime(i), prediccio.getTemp(i), prediccio.getWind(i),
-                    prediccio.getHumity(i), prediccio.getPresure(i), prediccio.getIcons(i)));//,prediccio.getIcons(i)
+            datos.addAll(new TablaModel(prediccio.getTime(i),"Min: "+ prediccio.getTempMin(i)+"ºC - Max: "+
+                    prediccio.getTempMax(i)+"ºC",prediccio.getWindDirection(i)+"  "+prediccio.getWindVelocity(i)+" Km/h",
+                    prediccio.getHumity(i)+" %", prediccio.getPresure(i)+" hPa",
+                    prediccio.getIcons(i)));//,prediccio.getIcons(i)
         }
         tabla.setItems(datos);
         tabla.refresh();
@@ -201,17 +179,13 @@ table.setRowFactory( tv -> {
         maximas.setName("maximas");
         if (MbIntervalo.getText()==null||MbIntervalo.getText().length() < 8) {
             for(int i=0;i<prediccio.getTotalPrevisiones();i++){
-                minimas.getData().add(new XYChart.Data(ejeX.get(i), Float.parseFloat(prediccio.getTemp(i).
-                        substring(8, prediccio.getTemp(i).indexOf("º")))));
-                maximas.getData().add(new XYChart.Data(ejeX.get(i), Float.parseFloat(prediccio.getTemp(i).
-                        substring(prediccio.getTemp(i).lastIndexOf(":") + 1, prediccio.getTemp(i).lastIndexOf("º")))));
+                minimas.getData().add(new XYChart.Data(ejeX.get(i), Float.parseFloat(prediccio.getTempMin(i))));
+                maximas.getData().add(new XYChart.Data(ejeX.get(i), Float.parseFloat(prediccio.getTempMax(i))));
             }
         }else{
             for(int i=0;i<prediccio.getTotalPrevisiones();i++){
-                minimas.getData().add(new XYChart.Data(ejeX.get(i), Float.parseFloat(prediccio.getTemp(i).
-                        substring(15, prediccio.getTemp(i).indexOf("º")))));
-                maximas.getData().add(new XYChart.Data(ejeX.get(i), Float.parseFloat(prediccio.getTemp(i).
-                        substring(prediccio.getTemp(i).lastIndexOf(":") + 1, prediccio.getTemp(i).lastIndexOf("º")))));
+                minimas.getData().add(new XYChart.Data(ejeX.get(i), Float.parseFloat(prediccio.getTempMin(i).replace(",", "."))));
+                maximas.getData().add(new XYChart.Data(ejeX.get(i), Float.parseFloat(prediccio.getTempMax(i).replace(",","."))));
             }
         }
 
